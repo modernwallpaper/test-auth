@@ -1,0 +1,18 @@
+{
+  "name": "test-auth",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon server/dist/index.js",
+    "client": "npm run dev --prefix client",
+    "start": "concurrently 'npm run server' 'npm run client'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.4"
+  }
+}
