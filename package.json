@@ -14,5 +14,8 @@
   "devDependencies": {
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.4"
+  },
+  "dependencies": {
+    "lucide-react": "^0.411.0"
   }
 }
