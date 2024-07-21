@@ -1,5 +1,6 @@
 import { apiSlice } from "./api.slice";
 const USER_AUTH = "/api/auth";
+const USER = "/api/users";
 
 export const userApiSclice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,6 +9,19 @@ export const userApiSclice = apiSlice.injectEndpoints({
         url: `${USER_AUTH}/login`,
         method: 'POST',
         body: data,
+      }),
+    }),
+    register: builder.mutation({
+      query: (data) => ({
+        url: `${USER_AUTH}/register`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    getProfile: builder.mutation({
+      query: () => ({
+        url: `${USER}/profile`,
+        method: 'GET',
       }),
     }),
     logout: builder.mutation({
@@ -19,4 +33,4 @@ export const userApiSclice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation } = userApiSclice;
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useGetProfileMutation } = userApiSclice;

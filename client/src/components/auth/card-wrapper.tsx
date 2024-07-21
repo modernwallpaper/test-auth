@@ -21,7 +21,7 @@ export const CardWrapper = ({
   backHref,
 }: Props) => {
   return(
-    <Card className="w-[400px]">
+    <Card className="w-[400px]"> 
       <CardHeader>
         <Header label={header} />
       </CardHeader>

@@ -10,54 +10,49 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import * as z from "zod"
-import { LoginSchema } from "@/schemas"
+import { RegisterSchema } from "@/schemas"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { FormError } from "../app/form-error"
 import { FormSuccess } from "../app/form-success"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
-import { useGetProfileMutation, useLoginMutation } from "@/states/slices/usersapi.slice"
+import { useRegisterMutation } from "@/states/slices/usersapi.slice"
 import { useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 import { setCredentials } from "@/states/slices/auth.slice"
 import { RootState } from "@/states/store"
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [getProfile] = useGetProfileMutation();
-  const [login, { isLoading }] = useLoginMutation();
-  const { userInfo } = useSelector((state: RootState) => state.auth);
-
+  const [register, { isLoading }] = useRegisterMutation();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
+  const { userInfo } = useSelector((state: RootState) => state.auth);
   useEffect(() => { 
     if(userInfo) navigate("/protected/settings");
   }, [navigate, userInfo]);
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: "",
       password: "",
+      name: "",
     },
   });
 
-  const onSumbit = async (values: z.infer<typeof LoginSchema>) => {
-    setErrorMessage(undefined);
+  const onSumbit = async (values: z.infer<typeof RegisterSchema>) => {
     try {
-      await login({ 
+      const res = await register({ 
+        name: values.name,
         email: values.email,
         password: values.password,
       }).unwrap();
-      
-      const userdata = await getProfile({}).unwrap();
-
-      dispatch(setCredentials({...userdata}));
+      dispatch(setCredentials({...res}));
       navigate("/protected/settings");
-      console.clear();
     } catch (err) {
       if (err && typeof err === "object" && "data" in err) {
         const errorData = err as { data: { message: string } };
@@ -70,13 +65,29 @@ export const LoginForm = () => {
 
   return(
     <CardWrapper
-      header="Login"
-      backLabel="Don't have an account?"
-      backHref="/auth/register"
+      header="Register"
+      backLabel="Already have an account?"
+      backHref="/auth/login"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSumbit)} className="space-y-6">
           <div className="space-y-4">
+            <FormField 
+              disabled={isLoading}
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex w-full justify-between items-center">
+                    <p>Name</p>
+                    <FormMessage />
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="someone" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
             <FormField 
               disabled={isLoading}
               control={form.control}
@@ -113,7 +124,7 @@ export const LoginForm = () => {
           <FormError message={errorMessage} />
           <FormSuccess message="" />
           <Button disabled={isLoading} type="submit" className="w-full">
-            Login
+            Register  
           </Button>
         </form>
       </Form>

@@ -1,19 +1,12 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Outlet, useNavigate } from "react-router-dom";
-import { RootState } from "@/states/store"
+import authmiddleware from "@/providers/middleware";
+import { Outlet } from "react-router-dom";
 
-export default function ProtectedLayout() {
-  const { userInfo } = useSelector((state: RootState) => state.auth);  
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if(!userInfo) navigate("/auth/login"); 
-  }, [navigate, userInfo])
-
+const ProtectedLayout = () => {
   return(
     <main className="w-full h-full">
       <Outlet />
     </main>
   )
 }
+
+export default authmiddleware(ProtectedLayout);
